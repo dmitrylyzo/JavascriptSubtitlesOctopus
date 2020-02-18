@@ -58,7 +58,8 @@
                         }, // All available fonts (font name should be lower case). It will load only fonts really used in sub.
                         //onReady: onReadyFunction,
                         //debug: true,
-                        workerUrl: '/JavascriptSubtitlesOctopus/assets/js/subtitles-octopus-worker.js'
+                        workerUrl: '/JavascriptSubtitlesOctopus/assets/js/subtitles-octopus-worker.js',
+                        legacyWorkerUrl: '/JavascriptSubtitlesOctopus/assets/js/subtitles-octopus-worker-legacy.js'
                     };
                     window.octopusInstance = new SubtitlesOctopus(options); // You can experiment in console
                 };
