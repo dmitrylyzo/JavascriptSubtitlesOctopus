@@ -19,50 +19,59 @@
 
 int log_level = 3;
 
-typedef struct {
-    void *buffer;
-    size_t size;
-    size_t lessen_counter;
-} buffer_t;
+class ReusableBuffer {
+private:
+    void *m_buffer;
+    size_t m_size;
+    size_t m_lessen_counter;
 
-void* buffer_resize(buffer_t *buf, size_t new_size, int keep_content) {
-    if (buf->size >= new_size) {
-        if (buf->size >= 1.3 * new_size) {
-            // big reduction request
-            buf->lessen_counter++;
+public:
+    ReusableBuffer(): m_buffer(NULL), m_size(0), m_lessen_counter(0) {}
+
+    ~ReusableBuffer() {
+        free(m_buffer);
+    }
+
+    void clear() {
+        free(m_buffer);
+        m_buffer = NULL;
+        m_size = 0;
+        m_lessen_counter = 0;
+    }
+
+    void *ensure_size(size_t new_size, bool keep_content) {
+        if (m_size >= new_size) {
+            if (m_size >= 1.3 * new_size) {
+                // big reduction request
+                m_lessen_counter++;
+            } else {
+                m_lessen_counter = 0;
+            }
+            if (m_lessen_counter < 10) {
+                // not reducing the buffer yet
+                return m_buffer;
+            }
+        }
+
+        void *newbuf;
+        if (keep_content) {
+            newbuf = realloc(m_buffer, new_size);
         } else {
-            buf->lessen_counter = 0;
+            newbuf = malloc(new_size);
         }
-        if (buf->lessen_counter < 10) {
-            // not reducing the buffer yet
-            return buf->buffer;
-        }
+        if (!newbuf) return NULL;
+
+        if (!keep_content) free(m_buffer);
+        m_buffer = newbuf;
+        m_size = new_size;
+        m_lessen_counter = 0;
+        return m_buffer;
     }
 
-    void *newbuf;
-    if (keep_content) {
-        newbuf = realloc(buf->buffer, new_size);
-    } else {
-        newbuf = malloc(new_size);
+    size_t capacity() const {
+        return m_size;
     }
-    if (!newbuf) return NULL;
-
-    if (!keep_content) free(buf->buffer);
-    buf->buffer = newbuf;
-    buf->size = new_size;
-    buf->lessen_counter = 0;
-    return buf->buffer;
-}
-
-void buffer_init(buffer_t *buf) {
-    buf->buffer = NULL;
-    buf->size = 0;
-    buf->lessen_counter = 0;
-}
-
-void buffer_free(buffer_t *buf) {
-    free(buf->buffer);
-}
+};
 
 void msg_callback(int level, const char *fmt, va_list va, void *data) {
     if (level > log_level) // 6 for verbose
@@ -127,7 +136,7 @@ public:
         resizeCanvas(frame_w, frame_h);
 
         reloadFonts();
-        buffer_init(&m_blend);
+        m_blend.clear();
     }
 
     /* TRACK */
@@ -173,7 +182,7 @@ public:
         ass_free_track(track);
         ass_renderer_done(ass_renderer);
         ass_library_done(ass_library);
-        buffer_free(&m_blend);
+        m_blend.clear();
     }
     void reloadLibrary() {
         quitLibrary();
@@ -265,7 +274,7 @@ public:
 
         // make float buffer for blending
         const size_t buffer_size = width * height * 4 * sizeof(float);
-        float* buf = (float*)buffer_resize(&m_blend, buffer_size, 0);
+        float* buf = (float*)m_blend.ensure_size(buffer_size, false);
         if (buf == NULL) {
             printf("libass: error: cannot allocate buffer for blending");
             return &m_blendResult;
@@ -345,7 +354,7 @@ public:
     }
 
 private:
-    buffer_t m_blend;
+    ReusableBuffer m_blend;
     RenderBlendResult m_blendResult;
 };
 
