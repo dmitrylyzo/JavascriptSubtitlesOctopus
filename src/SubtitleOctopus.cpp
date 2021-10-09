@@ -445,6 +445,7 @@ public:
         int split_y_low = canvas_h / 3, split_y_high = 2 * canvas_h / 3;
         BoundingBox boxes[MAX_BLEND_STORAGES];
         for (ASS_Image *cur = img; cur != NULL; cur = cur->next) {
+            if (cur->w == 0 || cur->h == 0) continue; // skip empty images
             int index = 0;
             int middle_x = cur->dst_x + (cur->w >> 1), middle_y = cur->dst_y + (cur->h >> 1);
             if (middle_y > split_y_high) {
