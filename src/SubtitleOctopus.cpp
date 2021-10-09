@@ -428,10 +428,11 @@ public:
 
     RenderBlendResult* renderBlend(double tm, int force) {
         m_blendResult.blend_time = 0.0;
+        m_blendResult.part = NULL;
 
         ASS_Image *img = ass_render_frame(ass_renderer, track, (int)(tm * 1000), &m_blendResult.changed);
         if (img == NULL || (m_blendResult.changed == 0 && !force)) {
-            return NULL;
+            return &m_blendResult;
         }
 
         double start_blend_time = emscripten_get_now();
@@ -475,11 +476,10 @@ public:
             if (!merged) break;
         }
 
-        m_blendResult.part = NULL;
         for (int box = 0; box < MAX_BLEND_STORAGES; box++) {
             if (boxes[box].empty()) continue;
             RenderBlendPart *part = renderBlendPart(boxes[box], img);
-            if (part == NULL) return NULL;
+            if (part == NULL) break; // memory allocation error
             part->next = m_blendResult.part;
             m_blendResult.part = part;
         }

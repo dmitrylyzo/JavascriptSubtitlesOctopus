@@ -207,21 +207,22 @@ self.blendRenderTiming = function (timing, force) {
     var startTime = performance.now();
 
     var renderResult = self.octObj.renderBlend(timing, force);
-    var blendTime = renderResult.blend_time;
-    var canvases = [], buffers = [];
-    if (renderResult.ptr != 0 && (renderResult.changed != 0 || force)) {
-        // make a copy, as we should free the memory so subsequent calls can utilize it
-        for (var part = renderResult.part; part.ptr != 0; part = part.next) {
-            var result = new Uint8Array(HEAPU8.subarray(part.image, part.image + part.dest_width * part.dest_height * 4));
-            canvases.push({w: part.dest_width, h: part.dest_height, x: part.dest_x, y: part.dest_y, buffer: result.buffer});
-            buffers.push(result.buffer);
-        }
+
+    var canvases = [];
+    var buffers = [];
+
+    // make a copy, as we should free the memory so subsequent calls can utilize it
+    for (var part = renderResult.part; part.ptr != 0; part = part.next) {
+        var result = new Uint8Array(HEAPU8.subarray(part.image, part.image + part.dest_width * part.dest_height * 4));
+        canvases.push({w: part.dest_width, h: part.dest_height, x: part.dest_x, y: part.dest_y, buffer: result.buffer});
+        buffers.push(result.buffer);
     }
 
     return {
+        changed: renderResult.changed || force || false,
         time: Date.now(),
         spentTime: performance.now() - startTime,
-        blendTime: blendTime,
+        blendTime: renderResult.blend_time,
         canvases: canvases,
         buffers: buffers
     }
@@ -232,7 +233,7 @@ self.blendRender = function (force) {
     self.renderPending = false;
 
     var rendered = self.blendRenderTiming(self.getCurrentTime() + self.delay, force);
-    if (rendered.canvases.length > 0) {
+    if (rendered.changed) {
         postMessage({
             target: 'canvas',
             op: 'renderCanvas',
