@@ -405,10 +405,14 @@ var SubtitlesOctopus = function (options) {
         if (!eventOver) {
             for (var i = 0; i < event.items.length; i++) {
                 var image = event.items[i];
-                self.bufferCanvas.width = image.w;
-                self.bufferCanvas.height = image.h;
-                self.bufferCanvasCtx.putImageData(image.image, 0, 0);
-                self.ctx.drawImage(self.bufferCanvas, image.x, image.y);
+                if (image.bitmap) {
+                    self.ctx.drawImage(image.bitmap, image.x, image.y);
+                } else {
+                    self.bufferCanvas.width = image.w;
+                    self.bufferCanvas.height = image.h;
+                    self.bufferCanvasCtx.putImageData(image.image, 0, 0);
+                    self.ctx.drawImage(self.bufferCanvas, image.x, image.y);
+                }
             }
         }
         if (self.debug) {
@@ -713,9 +717,10 @@ var SubtitlesOctopus = function (options) {
                                 h: item.h,
                                 x: item.x,
                                 y: item.y,
-                                image: new ImageData(new Uint8ClampedArray(item.buffer), item.w, item.h)
+                                image: item.buffer ? new ImageData(new Uint8ClampedArray(item.buffer), item.w, item.h) : null,
+                                bitmap: item.bitmap
                             });
-                            size += item.buffer.byteLength;
+                            size += item.byteLength;
                         }
 
                         var eventSplitted = false;

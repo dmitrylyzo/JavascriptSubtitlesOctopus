@@ -79,6 +79,21 @@ self.getRenderMethod = function () {
     }
 }
 
+self.getRenderTimingMethod = function () {
+    switch (self.renderMode) {
+        case 'lossy':
+            return self.lossyRenderTiming;
+        case 'js-blend':
+            return self.renderTiming;
+        default:
+            console.error('Unrecognised renderMode, falling back to default!');
+            self.renderMode = 'wasm-blend';
+            // fallthrough
+        case 'wasm-blend':
+            return self.blendRenderTiming;
+    }
+}
+
 /**
  * Set the subtitle track.
  * @param {!string} content the content of the subtitle file.
@@ -185,23 +200,46 @@ self.setIsPaused = function (isPaused) {
     }
 };
 
+self.renderTiming = function (timing, force) {
+    var startTime = performance.now();
+
+    var renderResult = self.octObj.renderImage(timing, self.changed);
+    var changed = Module.getValue(self.changed, 'i32');
+
+    var canvases = [];
+    var buffers = [];
+
+    if (changed != 0) {
+        var result = self.buildResult(renderResult);
+        canvases = result[0];
+        buffers = result[1];
+    }
+
+    return Promise.resolve({
+        changed: changed || force || false,
+        time: Date.now(),
+        spentTime: performance.now() - startTime,
+        blendTime: 0,
+        canvases: canvases,
+        buffers: buffers
+    });
+}
+
 self.render = function (force) {
     self.rafId = 0;
     self.renderPending = false;
-    var startTime = performance.now();
-    var renderResult = self.octObj.renderImage(self.getCurrentTime() + self.delay, self.changed);
-    var changed = Module.getValue(self.changed, 'i32');
-    if (changed != 0 || force) {
-        var result = self.buildResult(renderResult);
-        var spentTime = performance.now() - startTime;
-        postMessage({
-            target: 'canvas',
-            op: 'renderCanvas',
-            time: Date.now(),
-            spentTime: spentTime,
-            canvases: result[0]
-        }, result[1]);
-    }
+
+    self.renderTiming(self.getCurrentTime() + self.delay, force).then(function (rendered) {
+        if (rendered.changed) {
+            postMessage({
+                target: 'canvas',
+                op: 'renderCanvas',
+                time: rendered.time,
+                spentTime: rendered.spentTime,
+                canvases: rendered.canvases
+            }, rendered.buffers);
+        }
+    });
 
     if (!self._isPaused) {
         self.rafId = self.requestAnimationFrame(self.render);
@@ -219,35 +257,36 @@ self.blendRenderTiming = function (timing, force) {
     // make a copy, as we should free the memory so subsequent calls can utilize it
     for (var part = renderResult.part; part.ptr != 0; part = part.next) {
         var result = new Uint8Array(HEAPU8.subarray(part.image, part.image + part.dest_width * part.dest_height * 4));
-        canvases.push({w: part.dest_width, h: part.dest_height, x: part.dest_x, y: part.dest_y, buffer: result.buffer});
+        canvases.push({w: part.dest_width, h: part.dest_height, x: part.dest_x, y: part.dest_y, buffer: result.buffer, byteLength: result.buffer.byteLength});
         buffers.push(result.buffer);
     }
 
-    return {
+    return Promise.resolve({
         changed: renderResult.changed || force || false,
         time: Date.now(),
         spentTime: performance.now() - startTime,
         blendTime: renderResult.blend_time,
         canvases: canvases,
         buffers: buffers
-    }
+    });
 }
 
 self.blendRender = function (force) {
     self.rafId = 0;
     self.renderPending = false;
 
-    var rendered = self.blendRenderTiming(self.getCurrentTime() + self.delay, force);
-    if (rendered.changed) {
-        postMessage({
-            target: 'canvas',
-            op: 'renderCanvas',
-            time: rendered.time,
-            spentTime: rendered.spentTime,
-            blendTime: rendered.blendTime,
-            canvases: rendered.canvases
-        }, rendered.buffers);
-    }
+    self.blendRenderTiming(self.getCurrentTime() + self.delay, force).then(function (rendered) {
+        if (rendered.changed) {
+            postMessage({
+                target: 'canvas',
+                op: 'renderCanvas',
+                time: rendered.time,
+                spentTime: rendered.spentTime,
+                blendTime: rendered.blendTime,
+                canvases: rendered.canvases
+            }, rendered.buffers);
+        }
+    });
 
     if (!self._isPaused) {
         self.rafId = self.requestAnimationFrame(self.blendRender);
@@ -257,69 +296,101 @@ self.blendRender = function (force) {
 self.oneshotRender = function (lastRenderedTime, renderNow, iteration) {
     var eventStart = renderNow ? lastRenderedTime : self.octObj.findNextEventStart(lastRenderedTime);
     var eventFinish = -1.0, emptyFinish = -1.0, animated = false;
-    var rendered = {};
+
+    var promise;
     if (eventStart >= 0) {
         eventTimes = self.octObj.findEventStopTimes(eventStart);
         eventFinish = eventTimes.eventFinish;
         emptyFinish = eventTimes.emptyFinish;
         animated = eventTimes.is_animated;
 
-        rendered = self.blendRenderTiming(eventStart, true);
+        promise = getRenderTimingMethod()(eventStart, true);
+    } else {
+        promise = Promise.resolve({});
     }
 
-    postMessage({
-        target: 'canvas',
-        op: 'oneshot-result',
-        iteration: iteration,
-        lastRenderedTime: lastRenderedTime,
-        eventStart: eventStart,
-        eventFinish: eventFinish,
-        emptyFinish: emptyFinish,
-        animated: animated,
-        viewport: {
-            width: self.width,
-            height: self.height
-        },
-        spentTime: rendered.spentTime || 0,
-        blendTime: rendered.blendTime || 0,
-        canvases: rendered.canvases || []
-    }, rendered.buffers || []);
+    promise.then(function (rendered) {
+        postMessage({
+            target: 'canvas',
+            op: 'oneshot-result',
+            iteration: iteration,
+            lastRenderedTime: lastRenderedTime,
+            eventStart: eventStart,
+            eventFinish: eventFinish,
+            emptyFinish: emptyFinish,
+            animated: animated,
+            viewport: {
+                width: self.width,
+                height: self.height
+            },
+            spentTime: rendered.spentTime || 0,
+            blendTime: rendered.blendTime || 0,
+            canvases: rendered.canvases || []
+        }, rendered.buffers || []);
+    });
 }
 
-self.lossyRender = function (force) {
-    self.rafId = 0;
-    self.renderPending = false;
+self.lossyRenderTiming = function (timing, force) {
     var startTime = performance.now();
-    var renderResult = self.octObj.renderImage(self.getCurrentTime() + self.delay, self.changed);
+
+    var renderResult = self.octObj.renderImage(timing, self.changed);
     var changed = Module.getValue(self.changed, "i32");
-    if (changed != 0 || force) {
+
+    var bitmaps = [];
+    var promises = [];
+
+    if (changed != 0) {
         var result = self.buildResult(renderResult);
+
         var newTime = performance.now();
         var libassTime = newTime - startTime;
-        var promises = [];
+
         for (var i = 0; i < result[0].length; i++) {
             var image = result[0][i];
             var imageBuffer = new Uint8ClampedArray(image.buffer);
             var imageData = new ImageData(imageBuffer, image.w, image.h);
             promises[i] = createImageBitmap(imageData, 0, 0, image.w, image.h);
         }
-        Promise.all(promises).then(function (imgs) {
-            var decodeTime = performance.now() - newTime;
-            var bitmaps = [];
-            for (var i = 0; i < imgs.length; i++) {
-                var image = result[0][i];
-                bitmaps[i] = { x: image.x, y: image.y, bitmap: imgs[i] };
-            }
-            postMessage({
-                target: "canvas",
-                op: "renderFastCanvas",
-                time: Date.now(),
-                libassTime: libassTime,
-                decodeTime: decodeTime,
-                bitmaps: bitmaps
-            }, imgs);
-        });
     }
+
+    return Promise.all(promises).then(function (imgs) {
+        var decodeTime = performance.now() - newTime;
+
+        for (var i = 0; i < imgs.length; i++) {
+            var image = result[0][i];
+            bitmaps[i] = { w: image.w, h: image.h, x: image.x, y: image.y, bitmap: imgs[i], byteLength: image.buffer.byteLength};
+        }
+
+        return {
+            changed: changed != 0 || force || false,
+            time: Date.now(),
+            spentTime: performance.now() - startTime,
+            blendTime: 0,
+            libassTime: libassTime,
+            decodeTime: decodeTime,
+            canvases: bitmaps,
+            buffers: imgs
+        };
+    });
+}
+
+self.lossyRender = function (force) {
+    self.rafId = 0;
+    self.renderPending = false;
+
+    self.lossyRenderTiming(self.getCurrentTime() + self.delay, force).then(function (rendered) {
+        if (rendered.changed) {
+            postMessage({
+                target: 'canvas',
+                op: 'renderFastCanvas',
+                time: rendered.time,
+                libassTime: rendered.libassTime,
+                decodeTime: rendered.decodeTime,
+                bitmaps: rendered.canvases
+            }, rendered.buffers);
+        }
+    });
+
     if (!self._isPaused) {
         self.rafId = self.requestAnimationFrame(self.lossyRender);
     }
@@ -378,7 +449,7 @@ self.buildResultItem = function (ptr) {
     x = ptr.dst_x;
     y = ptr.dst_y;
 
-    return {w: w, h: h, x: x, y: y, buffer: result.buffer};
+    return {w: w, h: h, x: x, y: y, buffer: result.buffer, byteLength: result.buffer.byteLength};
 };
 
 if (typeof SDL !== 'undefined') {
