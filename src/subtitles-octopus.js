@@ -694,9 +694,6 @@ var SubtitlesOctopus = function (options) {
                         self.oneshotState.renderRequested = false;
                         self.oneshotState.requestNextTimestamp = -1;
 
-                        if (Math.abs(data.lastRenderedTime - requestNextTimestamp) < EVENTTIME_ULP) {
-                            requestNextTimestamp = -1;
-                        }
                         if (data.eventStart - data.lastRenderedTime > EVENTTIME_ULP) {
                             // generate bogus empty element, so all timeline is covered anyway
                             self.renderedItems.push({
@@ -748,6 +745,11 @@ var SubtitlesOctopus = function (options) {
                         self.renderedItems.sort(function (a, b) {
                             return a.eventStart - b.eventStart;
                         });
+
+                        // discard covered next request (bogus event + received event)
+                        if (data.lastRenderedTime <= requestNextTimestamp && (data.emptyFinish < 0 || requestNextTimestamp < data.emptyFinish)) {
+                            requestNextTimestamp = -1;
+                        }
 
                         if (requestNextTimestamp >= 0) {
                             // requesting an out of order event render
