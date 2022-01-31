@@ -19,13 +19,24 @@
 
 int log_level = 3;
 
+// maximum frame buffer width (8K resolution)
+const size_t FRAMEBUFFER_MAX_WIDTH = 7680;
+// maximum frame buffer height (8K resolution)
+const size_t FRAMEBUFFER_MAX_HEIGHT = 4320;
+
 typedef struct {
     float *buffer;
     size_t size;
     size_t lessen_counter;
 } buffer_t;
 
-float* buffer_resize(buffer_t *buf, size_t new_size, int keep_content) {
+float* buffer_resize(buffer_t *buf, size_t width, size_t height, int keep_content) {
+    if (width == 0 || width > FRAMEBUFFER_MAX_WIDTH || height == 0 || height > FRAMEBUFFER_MAX_HEIGHT) {
+        return NULL;
+    }
+
+    const size_t new_size = width * height * 4 * sizeof(float);
+
     if (buf->size >= new_size) {
         if (buf->size >= 1.3 * new_size) {
             // big reduction request
@@ -264,7 +275,7 @@ public:
         }
 
         // make float buffer for blending
-        float* buf = buffer_resize(&m_blend, sizeof(float) * width * height * 4, 0);
+        float* buf = buffer_resize(&m_blend, width, height, 0);
         if (buf == NULL) {
             printf("libass: error: cannot allocate buffer for blending");
             return &m_blendResult;
