@@ -27,6 +27,7 @@ const size_t FRAMEBUFFER_MAX_HEIGHT = 4320;
 typedef struct {
     float *buffer;
     size_t size;
+    size_t capacity;
     size_t lessen_counter;
 } buffer_t;
 
@@ -37,8 +38,8 @@ float* buffer_resize(buffer_t *buf, size_t width, size_t height, int keep_conten
 
     const size_t new_size = width * height * 4 * sizeof(float);
 
-    if (buf->size >= new_size) {
-        if (buf->size >= 1.3 * new_size) {
+    if (buf->capacity >= new_size) {
+        if (buf->capacity >= 1.3 * new_size) {
             // big reduction request
             buf->lessen_counter++;
         } else {
@@ -46,6 +47,7 @@ float* buffer_resize(buffer_t *buf, size_t width, size_t height, int keep_conten
         }
         if (buf->lessen_counter < 10) {
             // not reducing the buffer yet
+            buf->size = new_size;
             return buf->buffer;
         }
     }
@@ -61,6 +63,7 @@ float* buffer_resize(buffer_t *buf, size_t width, size_t height, int keep_conten
     if (!keep_content) free(buf->buffer);
     buf->buffer = newbuf;
     buf->size = new_size;
+    buf->capacity = new_size;
     buf->lessen_counter = 0;
     return buf->buffer;
 }
@@ -68,6 +71,7 @@ float* buffer_resize(buffer_t *buf, size_t width, size_t height, int keep_conten
 void buffer_init(buffer_t *buf) {
     buf->buffer = NULL;
     buf->size = 0;
+    buf->capacity = 0;
     buf->lessen_counter = 0;
 }
 
@@ -280,7 +284,7 @@ public:
             printf("libass: error: cannot allocate buffer for blending");
             return &m_blendResult;
         }
-        memset(buf, 0, sizeof(float) * width * height * 4);
+        memset(buf, 0, m_blend.size);
 
         // blend things in
         for (cur = img; cur != NULL; cur = cur->next) {
