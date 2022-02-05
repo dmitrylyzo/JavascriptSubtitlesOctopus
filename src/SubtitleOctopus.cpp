@@ -22,11 +22,11 @@ int log_level = 3;
 class ReusableBuffer {
 private:
     void *buffer_;
-    int size_;
-    int lessen_counter_;
+    size_t size_;
+    size_t lessen_counter_;
 
 public:
-    ReusableBuffer(): buffer_(NULL), size_(-1), lessen_counter_(0) {}
+    ReusableBuffer(): buffer_(NULL), size_(0), lessen_counter_(0) {}
 
     ~ReusableBuffer() {
         free(buffer_);
@@ -35,11 +35,11 @@ public:
     void clear() {
         free(buffer_);
         buffer_ = NULL;
-        size_ = -1;
+        size_ = 0;
         lessen_counter_ = 0;
     }
 
-    void *ensure_size(int new_size, bool keep_content) {
+    void *ensure_size(size_t new_size, bool keep_content) {
         if (size_ >= new_size) {
             if (size_ >= 1.3 * new_size) {
                 // big reduction request
@@ -68,7 +68,7 @@ public:
         return buffer_;
     }
 
-    int capacity() const {
+    size_t capacity() const {
         return size_;
     }
 };
