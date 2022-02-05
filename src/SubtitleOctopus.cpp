@@ -23,10 +23,11 @@ class ReusableBuffer {
 private:
     void *buffer_;
     size_t size_;
+    size_t capacity_;
     size_t lessen_counter_;
 
 public:
-    ReusableBuffer(): buffer_(NULL), size_(0), lessen_counter_(0) {}
+    ReusableBuffer(): buffer_(NULL), size_(0), capacity_(0), lessen_counter_(0) {}
 
     ~ReusableBuffer() {
         free(buffer_);
@@ -36,12 +37,13 @@ public:
         free(buffer_);
         buffer_ = NULL;
         size_ = 0;
+        capacity_ = 0;
         lessen_counter_ = 0;
     }
 
     void *ensure_size(size_t new_size, bool keep_content) {
-        if (size_ >= new_size) {
-            if (size_ >= 1.3 * new_size) {
+        if (capacity_ >= new_size) {
+            if (capacity_ >= 1.3 * new_size) {
                 // big reduction request
                 lessen_counter_++;
             } else {
@@ -49,6 +51,7 @@ public:
             }
             if (lessen_counter_ < 10) {
                 // not reducing the buffer yet
+                size_ = new_size;
                 return buffer_;
             }
         }
@@ -64,12 +67,17 @@ public:
         if (!keep_content) free(buffer_);
         buffer_ = newbuf;
         size_ = new_size;
+        capacity_ = new_size;
         lessen_counter_ = 0;
         return buffer_;
     }
 
-    size_t capacity() const {
+    size_t size() const {
         return size_;
+    }
+
+    size_t capacity() const {
+        return capacity_;
     }
 };
 
@@ -278,7 +286,7 @@ public:
             printf("libass: error: cannot allocate buffer for blending");
             return &m_blendResult;
         }
-        memset(buf, 0, sizeof(float) * width * height * 4);
+        memset(buf, 0, m_blend.size());
 
         // blend things in
         for (cur = img; cur != NULL; cur = cur->next) {
