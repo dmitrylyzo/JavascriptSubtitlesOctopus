@@ -21,55 +21,55 @@ int log_level = 3;
 
 class ReusableBuffer {
 private:
-    void *buffer;
-    int size;
-    int lessen_counter;
+    void *buffer_;
+    int size_;
+    int lessen_counter_;
 
 public:
-    ReusableBuffer(): buffer(NULL), size(-1), lessen_counter(0) {}
+    ReusableBuffer(): buffer_(NULL), size_(-1), lessen_counter_(0) {}
 
     ~ReusableBuffer() {
-        free(buffer);
+        free(buffer_);
     }
 
     void clear() {
-        free(buffer);
-        buffer = NULL;
-        size = -1;
-        lessen_counter = 0;
+        free(buffer_);
+        buffer_ = NULL;
+        size_ = -1;
+        lessen_counter_ = 0;
     }
 
     void *ensure_size(int new_size, bool keep_content) {
-        if (size >= new_size) {
-            if (size >= 1.3 * new_size) {
+        if (size_ >= new_size) {
+            if (size_ >= 1.3 * new_size) {
                 // big reduction request
-                lessen_counter++;
+                lessen_counter_++;
             } else {
-                lessen_counter = 0;
+                lessen_counter_ = 0;
             }
-            if (lessen_counter < 10) {
+            if (lessen_counter_ < 10) {
                 // not reducing the buffer yet
-                return buffer;
+                return buffer_;
             }
         }
 
         void *newbuf;
         if (keep_content) {
-            newbuf = realloc(buffer, new_size);
+            newbuf = realloc(buffer_, new_size);
         } else {
             newbuf = malloc(new_size);
         }
         if (!newbuf) return NULL;
 
-        if (!keep_content) free(buffer);
-        buffer = newbuf;
-        size = new_size;
-        lessen_counter = 0;
-        return buffer;
+        if (!keep_content) free(buffer_);
+        buffer_ = newbuf;
+        size_ = new_size;
+        lessen_counter_ = 0;
+        return buffer_;
     }
 
     int capacity() const {
-        return size;
+        return size_;
     }
 };
 
