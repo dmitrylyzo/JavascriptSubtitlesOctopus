@@ -21,6 +21,7 @@
 // License: Expat
 // Copyright: 2019 Zhongyuan Zhou <zhouzhongyuan@huawei.com>
 //   2020 Joe Orton <jorton@redhat.com>
+//   2021 Dong-hee Na <donghee.na@python.org>
 //   2016-2019 Sebastian Pipping <sebastian@pipping.org>
 //   2017 Joe Orton <jorton@redhat.com>
 //   2002 Fred L. Drake, Jr. <fdrake@users.sourceforge.net>
@@ -55,18 +56,19 @@
 //   2017-2018 Rhodri James <rhodri@wildebeest.org.uk>
 //   2005-2012 Karl Waclawek <karl@waclawek.net>
 //   2020 Boris Kolpackov <boris@codesynthesis.com>
-//   2005-2009 Steven Solie <ssolie@users.sourceforge.net>
-//   2016 Cristian Rodr\x{00c3}\x{00ad}guez <crrodriguez@opensuse.org>
+//   2022 Thijs Schreijer <thijs@thijsschreijer.nl>
 //   2017-2019 Sebastian Pipping <sebastian@pipping.org>
-//   2005-2007 Steven Solie <ssolie@users.sourceforge.net>
+//   2016 Cristian Rodr\x{00c3}\x{00ad}guez <crrodriguez@opensuse.org>
 //   2005 Karl Waclawek <karl@waclawek.net>
 //   1999-2000 Thai Open Source Software Center Ltd
 //   2000-2017 Expat development team / 1997-2000 Thai Open Source Software Center Ltd
 //   2016-2021 Sebastian Pipping <sebastian@pipping.org>
+//   2005-2007 Steven Solie <steven@solie.ca>
 //   2005 Fred L. Drake, Jr. <fdrake@users.sourceforge.net>
 //   2018 Anton Maklakov <antmak.pub@gmail.com>
 //   2017 Alexander Bluhm <alexander.bluhm@gmx.net>
 //   1997-2000 Thai Open Source Software Center Ltd
+//   2016-2022 Sebastian Pipping <sebastian@pipping.org>
 //   2017-2021 Sebastian Pipping <sebastian@pipping.org>
 //   2002-2009 Karl Waclawek <karl@waclawek.net>
 //   2002 Karl Waclawek <karl@waclawek.net>
@@ -77,6 +79,7 @@
 //   2001-2002 Fred L. Drake, Jr. <fdrake@users.sourceforge.net>
 //   2002-2006 Karl Waclawek <karl@waclawek.net>
 //   2000-2005 Fred L. Drake, Jr. <fdrake@users.sourceforge.net>
+//   2005-2009 Steven Solie <steven@solie.ca>
 //   2018 Yury Gribov <tetra2005@gmail.com>
 //   2003 Greg Stein <gstein@users.sourceforge.net>
 //   2016-2017 Sebastian Pipping <sebastian@pipping.org>
@@ -91,8 +94,8 @@
 // Copyright: 2001-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
 //   2009-2013 Adobe Systems Incorporated.
 //   \x{00c5}\x{009d}\x{00c5}\x{00a5} \x{00c5}\x{009d}\x{00c5}\x{00a5}\x{00d1}\x{008f}\x{00c3}\x{00af}\x{00ef}\x{00ac}\x{00af}\x{00c4}\x{009f}")
-//   2017-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
 //   1995-2002 Mark Adler
+//   2017-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
 //   2013 Adobe Systems Incorporated.
 //   2005-2021 David Turner.
 //   2004-2021 Masatake YAMATO and Redhat K.K.
@@ -106,16 +109,16 @@
 //   \x{00c5}\x{009d}\x{00c5}\x{00a5} \x{00c5}\x{009d}\x{00c5}\x{00a5}\x{00d1}\x{008f}\x{00c3}\x{00af}\x{00ef}\x{00ac}\x{00af}\x{00c4}\x{009f}"));
 //   2002-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
 //   2003 Huw D M Davies for Codeweavers
-//   2004-2021 David Turner, Robert Wilhelm, Werner Lemberg, and George Williams.
 //   2013-2014 Adobe Systems Incorporated.
+//   2004-2021 David Turner, Robert Wilhelm, Werner Lemberg, and George Williams.
 //   1996-2021 David Turner, Robert Wilhelm, Werner Lemberg, and Detlef Wuerkner.
 //   2000-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
 //   2007-2021 David Turner.
 //   2011-2013 Adobe Systems Incorporated.
-//   2012-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
 //   2007 Dmitry Timoshkov for Codeweavers
 //   2018-2021 Armin Hasitzka, David Turner, Robert Wilhelm, and Werner Lemberg.
 //   2004-2021 David Turner, Robert Wilhelm, Werner Lemberg and George Williams.
+//   2012-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
 //   2007-2021 Dereg Clegg and Michael Toftdal.
 //   1996-2021 Just van Rossum, David Turner, Robert Wilhelm, and Werner Lemberg.
 //   2019-2021 Nikhil Ramakrishnan, David Turner, Robert Wilhelm, and Werner Lemberg.
@@ -128,29 +131,29 @@
 //   2004-2021 Masatake YAMATO, Red Hat K.K.,
 //   2016-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
 //   2020-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
-//   2007-2021 Rahul Bhalerao <rahul.bhalerao@redhat.com>, <b.rahul.pm@gmail.com>.
 //   2002-2021 Roberto Alameda.
+//   2007-2021 Rahul Bhalerao <rahul.bhalerao@redhat.com>, <b.rahul.pm@gmail.com>.
 //   1995-2002 Jean-loup Gailly.
 //   2004-2021 suzuki toshiya, Masatake YAMATO, Red Hat K.K.,
-//   2018-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
 //   2004-2021 Albert Chin-A-Young.
-//   2002-2021 David Turner, Robert Wilhelm, and Werner Lemberg
+//   2018-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
 //   2018-2021 David Turner, Robert Wilhelm, Dominik R\x{00c3}\x{00b6}ttsches, and Werner Lemberg.
+//   2002-2021 David Turner, Robert Wilhelm, and Werner Lemberg
 //   \x{00e1}\x{00bb}\x{008b}...): %dn", "\x{00e1}\x{00ba}\x{0083}\x{00ce}\x{00ad}\x{00c5}\x{0082}\x{00c4}\x{00ba}", "all", 42);
 //   2005-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
 //   2013 Google, Inc.
 //   2009-2014 Adobe Systems Incorporated.
-//   2010-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
 //   2013-2021 Google, Inc.
 //   2007-2013 Adobe Systems Incorporated.
-//   2007-2021 Derek Clegg and Michael Toftdal.
+//   2010-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
 //   2001, 2012 David Turner, Robert Wilhelm, and Werner Lemberg.
+//   2007-2021 Derek Clegg and Michael Toftdal.
 //   2003-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
 //   2008-2021 David Turner, Robert Wilhelm, Werner Lemberg, and suzuki toshiya.
 //   1990, 1994, 1998 The Open Group
 //   2004-2021 David Turner, Robert Wilhelm, and Werner Lemberg.
-//   1996-2021 David Turner, Robert Wilhelm, Werner Lemberg and Detlef W\x{00fc}rkner.
 //   2005-2021 suzuki toshiya, Masatake YAMATO, Red Hat K.K.,
+//   1996-2021 David Turner, Robert Wilhelm, Werner Lemberg and Detlef W\x{00fc}rkner.
 //   2004-2021 Masatake YAMATO, Redhat K.K,
 // 
 // License: public-domain
@@ -214,17 +217,17 @@
 //   2020 Zoltan Vandrus
 //   \x{00e6}\x{0081}\x{00af} 2010 Behdad Esfahbod
 //   2014 Red Hat, Inc.
-//   2018 Akira TAGOH
-//   \x{00e6}\x{0081}\x{00af} 2006 Keith Packard
 //   2007 Keith Packard
+//   \x{00e6}\x{0081}\x{00af} 2006 Keith Packard
+//   2018 Akira TAGOH
 //   2008 Danilo Šegan
 //   2015 Akira TAGOH
-//   2016 Akira TAGOH
 //   2008-2009 Red Hat, Inc.
+//   2016 Akira TAGOH
 //   2000 Keith Packard
-//   2013 Akira TAGOH
 //   2010 Behdad Esfahbod
 //   2013 Google, Inc.
+//   2013 Akira TAGOH
 // 
 // License: MIT~old
 // Copyright: 2009-2010 Red Hat, Inc.
@@ -255,8 +258,8 @@
 //   2014 Google, Inc.
 //   2018 Ebrahim Byagowi
 //   2016 Igalia S.L.
-//   2018 Ebrahim Byagowi.
 //   2011 Martin Hosken
+//   2018 Ebrahim Byagowi.
 //   2020 Ebrahim Byagowi
 //   2019 Ebrahim Byagowi
 //   1998-2004 David Turner and Werner Lemberg
@@ -291,10 +294,11 @@
 //   2016 Vabishchevich Nikolay <vabnick@gmail.com>
 //   2015 Stephan Vedder <stephan.vedder@gmail.com>
 //   2015 Vabishchevich Nikolay <vabnick@gmail.com>
+//   interest in the
 //   2006-2016 libass contributors
 //   2017 Vabishchevich Nikolay <vabnick@gmail.com>
-//   2010 Grigori Goronzy <greg@geekmind.org>
 //   2011 Grigori Goronzy <greg@chown.ath.cx>
+//   2010 Grigori Goronzy <greg@geekmind.org>
 //   2014 Vabishchevich Nikolay <vabnick@gmail.com>
 //   2013 Stefano Pigozzi <stefano.pigozzi@gmail.com>
 //   2015 Grigori Goronzy <greg@kinoho.net>
@@ -960,10 +964,16 @@ var SubtitlesOctopus = function (options) {
 
     var self = this;
     self.canvas = options.canvas; // HTML canvas element (optional if video specified)
-    self.renderMode = options.lossyRender ? 'fast' : (options.blendRender ? 'blend' : 'normal');
+    self.renderMode = options.renderMode || (options.lossyRender ? 'lossy' : 'wasm-blend');
+    self.dropAllAnimations = options.dropAllAnimations || false;
     self.libassMemoryLimit = options.libassMemoryLimit || 0;
     self.libassGlyphLimit = options.libassGlyphLimit || 0;
-    self.targetFps = options.targetFps || undefined;
+    self.targetFps = options.targetFps || 24;
+    self.prescaleFactor = options.prescaleFactor || 1.0;
+    self.prescaleHeightLimit = options.prescaleHeightLimit || 1080;
+    self.maxRenderHeight = options.maxRenderHeight || 0; // 0 - no limit
+    self.resizeVariation = options.resizeVariation || 0.2; // by how many a size can vary before it would cause clearance of prerendered buffer
+    self.renderAhead = options.renderAhead || 0; // how many MiB to render ahead and store; 0 to disable (approximate)
     self.isOurCanvas = false; // (internal) we created canvas and manage it
     self.video = options.video; // HTML video element (optional if canvas specified)
     self.canvasParent = null; // (internal) HTML canvas parent element
@@ -983,6 +993,19 @@ var SubtitlesOctopus = function (options) {
     self.pixelRatio = window.devicePixelRatio || 1; // (internal) Device pixel ratio (for high dpi devices)
 
     self.timeOffset = options.timeOffset || 0; // Time offset would be applied to currentTime from video (option)
+
+    self.renderedItems = []; // used to store items rendered ahead when renderAhead > 0
+    self.renderAhead = self.renderAhead * 1024 * 1024 * 0.9 /* try to eat less than requested */;
+    self.oneshotState = {
+        eventStart: null,
+        eventOver: false,
+        iteration: 0,
+        renderRequested: false,
+        requestNextTimestamp: -1,
+        prevWidth: null,
+        prevHeight: null
+    }
+    self.rafId = 0;
 
     self.hasAlphaBug = false;
 
@@ -1035,8 +1058,8 @@ var SubtitlesOctopus = function (options) {
         // Worker
         if (!self.worker) {
             self.worker = new Worker(self.workerUrl);
-            self.worker.onmessage = self.onWorkerMessage;
-            self.worker.onerror = self.workerError;
+            self.worker.addEventListener('message', self.onWorkerMessage);
+            self.worker.addEventListener('error', self.workerError);
         }
         self.workerActive = false;
         self.createCanvas();
@@ -1057,7 +1080,9 @@ var SubtitlesOctopus = function (options) {
             debug: self.debug,
             targetFps: self.targetFps,
             libassMemoryLimit: self.libassMemoryLimit,
-            libassGlyphLimit: self.libassGlyphLimit
+            libassGlyphLimit: self.libassGlyphLimit,
+            renderOnDemand: self.renderAhead > 0,
+            dropAllAnimations: self.dropAllAnimations
         });
     };
 
@@ -1127,6 +1152,9 @@ var SubtitlesOctopus = function (options) {
             self.video.addEventListener("seeked", function () {
                 self.video.addEventListener("timeupdate", timeupdate, false);
                 self.setCurrentTime(video.currentTime + self.timeOffset);
+                if (self.renderAhead > 0) {
+                    _cleanPastRendered(video.currentTime + self.timeOffset, true);
+                }
             }, false);
             self.video.addEventListener("ratechange", function () {
                 self.setRate(video.playbackRate);
@@ -1181,6 +1209,195 @@ var SubtitlesOctopus = function (options) {
     self.setSubUrl = function (subUrl) {
         self.subUrl = subUrl;
     };
+
+    function _cleanPastRendered(currentTime, seekClean) {
+        var retainedItems = [];
+        for (var i = 0, len = self.renderedItems.length; i < len; i++) {
+            var item = self.renderedItems[i];
+            if (item.emptyFinish < 0 || item.emptyFinish >= currentTime) {
+                // item is not yet finished, retain it
+                retainedItems.push(item);
+            }
+        }
+
+        if (seekClean && retainedItems.length > 0) {
+            // items are ordered by event start time when we push to self.renderedItems,
+            // so first item is the earliest
+            if (currentTime < retainedItems[0].eventStart) {
+                if (retainedItems[0].eventStart - currentTime > 60) {
+                    console.info("seeked back too far, cleaning prerender buffer");
+                    retainedItems = [];
+                } else {
+                    console.info("seeked backwards, need to free up some buffer");
+                    var size = 0, limit = self.renderAhead * 0.3 /* try to take no more than 1/3 of buffer */;
+                    var retain = [];
+                    for (var i = 0, len = retainedItems.length; i < len; i++) {
+                        var item = retainedItems[i];
+                        size += item.size;
+                        // Remove the end marker (emptyFinish < 0) to allow re-rendering in case we already reached end-of-events
+                        if (size >= limit || item.emptyFinish < 0) break;
+                        retain.push(item);
+                    }
+                    retainedItems = retain;
+                }
+            }
+        }
+
+        var removed = retainedItems.length < self.renderedItems;
+        self.renderedItems = retainedItems;
+        return removed;
+    }
+
+    function tryRequestOneshot(currentTime, renderNow) {
+        if (!self.renderAhead || self.renderAhead <= 0) return;
+        if (self.oneshotState.renderRequested && !renderNow) return;
+
+        if (typeof currentTime === 'undefined') {
+            if (!self.video) return;
+            currentTime = self.video.currentTime + self.timeOffset;
+        }
+
+        var size = 0;
+        for (var i = 0, len = self.renderedItems.length; i < len; i++) {
+            var item = self.renderedItems[i];
+            if (item.emptyFinish < 0) {
+                console.info('oneshot already reached end-of-events');
+                return;
+            }
+            if (currentTime >= item.eventStart && currentTime < item.emptyFinish) {
+                // an event for requested time already exists
+                console.debug('not requesting a render for ' + currentTime +
+                    ' as event already covering it exists (start=' +
+                    item.eventStart + ', empty=' + item.emptyFinish + ')');
+                return;
+            }
+            size += item.size;
+        }
+
+        if (size <= self.renderAhead) {
+            var lastRendered = currentTime - (renderNow ? 0 : 0.001);
+            if (!self.oneshotState.renderRequested) {
+                self.oneshotState.renderRequested = true;
+                self.worker.postMessage({
+                    target: 'oneshot-render',
+                    lastRendered: lastRendered,
+                    renderNow: renderNow,
+                    iteration: self.oneshotState.iteration
+                });
+            } else {
+                if (self.workerActive) {
+                    console.info('worker busy, requesting to seek');
+                }
+                self.oneshotState.requestNextTimestamp = lastRendered;
+            }
+        }
+    }
+
+    function _renderSubtitleEvent(event, currentTime) {
+        var eventOver = event.eventFinish < currentTime;
+        if (self.oneshotState.eventStart == event.eventStart && self.oneshotState.eventOver == eventOver) return;
+        self.oneshotState.eventStart = event.eventStart;
+        self.oneshotState.eventOver = eventOver;
+
+        var beforeDrawTime = performance.now();
+        if (event.viewport.width != self.canvas.width || event.viewport.height != self.canvas.height) {
+            self.canvas.width = event.viewport.width;
+            self.canvas.height = event.viewport.height;
+        }
+        self.ctx.clearRect(0, 0, self.canvas.width, self.canvas.height);
+        if (!eventOver) {
+            for (var i = 0; i < event.items.length; i++) {
+                var image = event.items[i];
+                self.bufferCanvas.width = image.w;
+                self.bufferCanvas.height = image.h;
+                self.bufferCanvasCtx.putImageData(image.image, 0, 0);
+                self.ctx.drawImage(self.bufferCanvas, image.x, image.y);
+            }
+        }
+        if (self.debug) {
+            var drawTime = Math.round(performance.now() - beforeDrawTime);
+            console.log('render: ' + Math.round(event.spentTime - event.blendTime) + ' ms, blend: ' + Math.round(event.blendTime) + ' ms, draw: ' + drawTime + ' ms');
+        }
+    }
+
+    function oneshotRender() {
+        self.rafId = window.requestAnimationFrame(oneshotRender);
+        if (!self.video) return;
+
+        var currentTime = self.video.currentTime + self.timeOffset;
+        var finishTime = -1, eventShown = false, animated = false;
+        for (var i = 0, len = self.renderedItems.length; i < len; i++) {
+            var item = self.renderedItems[i];
+            if (!eventShown && item.eventStart <= currentTime && (item.emptyFinish < 0 || item.emptyFinish > currentTime)) {
+                _renderSubtitleEvent(item, currentTime);
+                eventShown = true;
+                finishTime = item.emptyFinish;
+            } else if (finishTime >= 0) {
+                // we've already found a known event, now find
+                // the farthest point of consequent events
+                // NOTE: self.renderedItems may have gaps due to seeking
+                if (item.eventStart - finishTime < 0.01) {
+                    finishTime = item.emptyFinish;
+                    animated = item.animated;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        if (!eventShown) {
+            if (Math.abs(self.oneshotState.requestNextTimestamp - currentTime) > 0.01) {
+                _cleanPastRendered(currentTime);
+                tryRequestOneshot(currentTime, true);
+            }
+        } else if (_cleanPastRendered(currentTime) && finishTime >= 0) {
+            tryRequestOneshot(finishTime, animated);
+        }
+    }
+
+    function stopOneshotRender() {
+        window.cancelAnimationFrame(self.rafId);
+        self.rafId = 0;
+    }
+
+    self.resetRenderAheadCache = function (isResizing) {
+        if (self.renderAhead > 0) {
+            var newCache = [];
+            if (isResizing && self.oneshotState.prevHeight && self.oneshotState.prevWidth) {
+                if (self.oneshotState.prevHeight == self.canvas.height &&
+                    self.oneshotState.prevWidth == self.canvas.width) return;
+                var timeLimit = 10, sizeLimit = self.renderAhead * 0.3;
+                if (self.canvas.height >= self.oneshotState.prevHeight * (1.0 - self.resizeVariation) &&
+                    self.canvas.height <= self.oneshotState.prevHeight * (1.0 + self.resizeVariation) &&
+                    self.canvas.width >= self.oneshotState.prevWidth * (1.0 - self.resizeVariation) &&
+                    self.canvas.width <= self.oneshotState.prevWidth * (1.0 + self.resizeVariation)) {
+                    console.debug('viewport changes are small, leaving more of prerendered buffer');
+                    timeLimit = 30;
+                    sizeLimit = self.renderAhead * 0.5;
+                }
+                var stopTime = self.video.currentTime + self.timeOffset + timeLimit;
+                var size = 0;
+                for (var i = 0; i < self.renderedItems.length; i++) {
+                    var item = self.renderedItems[i];
+                    if (item.emptyFinish < 0 || item.emptyFinish >= stopTime) break;
+                    size += item.size;
+                    if (size >= sizeLimit) break;
+                    newCache.push(item);
+                }
+            }
+
+            console.info('resetting prerender cache');
+            self.renderedItems = newCache;
+            self.oneshotState.eventStart = null;
+            self.oneshotState.iteration++;
+            self.oneshotState.renderRequested = false;
+            self.oneshotState.prevHeight = self.canvas.height;
+            self.oneshotState.prevWidth = self.canvas.width;
+
+            if (!self.rafId) self.rafId = window.requestAnimationFrame(oneshotRender);
+            tryRequestOneshot(undefined, true);
+        }
+    }
 
     self.renderFrameData = null;
     function renderFrames() {
@@ -1306,6 +1523,86 @@ var SubtitlesOctopus = function (options) {
                         self.canvas[data.object][data.property] = data.value;
                         break;
                     }
+                    case 'oneshot-result': {
+                        if (data.iteration != self.oneshotState.iteration) {
+                            console.debug('received stale prerender, ignoring');
+                            return;
+                        }
+
+                        if (self.debug) {
+                            console.info('oneshot received (start=' +
+                                    data.eventStart + ', empty=' + data.emptyFinish +
+                                    '), render: ' + Math.round(data.spentTime) + ' ms');
+                        }
+                        self.oneshotState.renderRequested = false;
+                        if (Math.abs(data.lastRenderedTime - self.oneshotState.requestNextTimestamp) < 0.01) {
+                            self.oneshotState.requestNextTimestamp = -1;
+                        }
+                        if (data.eventStart - data.lastRenderedTime > 0.01) {
+                            // generate bogus empty element, so all timeline is covered anyway
+                            self.renderedItems.push({
+                                eventStart: data.lastRenderedTime,
+                                eventFinish: data.lastRenderedTime - 0.001,
+                                emptyFinish: data.eventStart,
+                                viewport: data.viewport,
+                                spentTime: 0,
+                                blendTime: 0,
+                                items: [],
+                                animated: false,
+                                size: 0
+                            });
+                        }
+
+                        var items = [];
+                        var size = 0;
+                        for (var i = 0, len = data.canvases.length; i < len; i++) {
+                            var item = data.canvases[i];
+                            items.push({
+                                w: item.w,
+                                h: item.h,
+                                x: item.x,
+                                y: item.y,
+                                image: new ImageData(new Uint8ClampedArray(item.buffer), item.w, item.h)
+                            });
+                            size += item.buffer.byteLength;
+                        }
+
+                        var eventSplitted = false;
+                        if ((data.emptyFinish > 0 && data.emptyFinish - data.eventStart < 1.0 / self.targetFps) || data.animated) {
+                            var newFinish = data.eventStart + 1.0 / self.targetFps;
+                            data.emptyFinish = newFinish;
+                            data.eventFinish = newFinish;
+                            eventSplitted = true;
+                        }
+                        self.renderedItems.push({
+                            eventStart: data.eventStart,
+                            eventFinish: data.eventFinish,
+                            emptyFinish: data.emptyFinish,
+                            spentTime: data.spentTime,
+                            blendTime: data.blendTime,
+                            viewport: data.viewport,
+                            items: items,
+                            animated: data.animated,
+                            size: size
+                        });
+
+                        self.renderedItems.sort(function (a, b) {
+                            return a.eventStart - b.eventStart;
+                        });
+
+                        if (self.oneshotState.requestNextTimestamp >= 0) {
+                            // requesting an out of order event render
+                            tryRequestOneshot(self.oneshotState.requestNextTimestamp, true);
+                        } else if (data.eventStart < 0) {
+                            console.info('oneshot received "end of frames" event');
+                        } else if (data.emptyFinish >= 0) {
+                            // there's some more event to render, try requesting next event
+                            tryRequestOneshot(data.emptyFinish, eventSplitted);
+                        } else {
+                            console.info('there are no more events to prerender');
+                        }
+                        break;
+                    }
                     default:
                         throw 'eh?';
                 }
@@ -1334,13 +1631,9 @@ var SubtitlesOctopus = function (options) {
                 break;
             }
             case 'get-events': {
-                console.log(data.target);
-                console.log(data.events);
                 break;
             }
             case 'get-styles': {
-                console.log(data.target);
-                console.log(data.styles);
                 break;
             }
             case 'ready': {
@@ -1351,14 +1644,39 @@ var SubtitlesOctopus = function (options) {
         }
     };
 
+    function _computeCanvasSize(width, height) {
+        var scalefactor = self.prescaleFactor <= 0 ? 1.0 : self.prescaleFactor;
+
+        if (height <= 0 || width <= 0) {
+            width = 0;
+            height = 0;
+        } else {
+            var sgn = scalefactor < 1 ? -1 : 1;
+            var newH = height;
+            if (sgn * newH * scalefactor <= sgn * self.prescaleHeightLimit)
+                newH *= scalefactor;
+            else if (sgn * newH < sgn * self.prescaleHeightLimit)
+                newH = self.prescaleHeightLimit;
+
+            if (self.maxRenderHeight > 0 && newH > self.maxRenderHeight)
+                newH = self.maxRenderHeight;
+
+            width *= newH / height;
+            height = newH;
+        }
+
+        return {'width': width, 'height': height};
+    }
+
     self.resize = function (width, height, top, left) {
         var videoSize = null;
         top = top || 0;
         left = left || 0;
         if ((!width || !height) && self.video) {
             videoSize = self.getVideoPosition();
-            width = videoSize.width * self.pixelRatio;
-            height = videoSize.height * self.pixelRatio;
+            var newSize = _computeCanvasSize(videoSize.width * self.pixelRatio, videoSize.height * self.pixelRatio);
+            width = newSize.width;
+            height = newSize.height;
             var offset = self.canvasParent.getBoundingClientRect().top - self.video.getBoundingClientRect().top;
             top = videoSize.y - offset;
             left = videoSize.x;
@@ -1396,6 +1714,7 @@ var SubtitlesOctopus = function (options) {
                 width: self.canvas.width,
                 height: self.canvas.height
             });
+            self.resetRenderAheadCache(true);
         }
     };
 
@@ -1431,6 +1750,7 @@ var SubtitlesOctopus = function (options) {
             target: 'set-track-by-url',
             url: url
         });
+        self.resetRenderAheadCache(false);
     };
 
     self.setTrack = function (content) {
@@ -1438,12 +1758,14 @@ var SubtitlesOctopus = function (options) {
             target: 'set-track',
             content: content
         });
+        self.resetRenderAheadCache(false);
     };
 
     self.freeTrack = function (content) {
         self.worker.postMessage({
             target: 'free-track'
         });
+        self.resetRenderAheadCache(false);
     };
 
 
@@ -1475,7 +1797,42 @@ var SubtitlesOctopus = function (options) {
         if (self.video) {
             self.video.parentNode.removeChild(self.canvasParent);
         }
+
+        stopOneshotRender();
     };
+
+    self.fetchFromWorker = function (workerOptions, onSuccess, onError) {
+        try {
+            var target = workerOptions['target']
+
+            var timeout = setTimeout(function() {
+                reject(Error('Error: Timeout while try to fetch ' + target))
+            }, 5000)
+
+            var resolve = function (event) {
+                if (event.data.target == target) {
+                    onSuccess(event.data)
+                    self.worker.removeEventListener('message', resolve)
+                    self.worker.removeEventListener('error', reject)
+                    clearTimeout(timeout)
+                }
+            }
+
+            var reject = function (event) {
+                onError(event)
+                self.worker.removeEventListener('message', resolve)
+                self.worker.removeEventListener('error', reject)
+                clearTimeout(timeout)
+            }
+
+            self.worker.addEventListener('message', resolve)
+            self.worker.addEventListener('error', reject)
+
+            self.worker.postMessage(workerOptions)
+        } catch (error) {
+            onError(error)
+        }
+    }
 
     self.createEvent = function (event) {
         self.worker.postMessage({
@@ -1484,10 +1841,12 @@ var SubtitlesOctopus = function (options) {
         });
     };
 
-    self.getEvents = function () {
-        self.worker.postMessage({
+    self.getEvents = function (onSuccess, onError) {
+        self.fetchFromWorker({
             target: 'get-events'
-        });
+        }, function(data) {
+            onSuccess(data.events)
+        }, onError);
     };
 
     self.setEvent = function (event, index) {
@@ -1511,11 +1870,13 @@ var SubtitlesOctopus = function (options) {
             style: style
         });
     };
-
-    self.getStyles = function () {
-        self.worker.postMessage({
+    
+    self.getStyles = function (onSuccess, onError) {
+        self.fetchFromWorker({
             target: 'get-styles'
-        });
+        }, function(data) {
+            onSuccess(data.styles)
+        }, onError);
     };
 
     self.setStyle = function (style, index) {
