@@ -3,6 +3,31 @@ var FRAMETIME_ULP = 0.001;
 // minimum time difference between subtitle events
 var EVENTTIME_ULP = 0.01;
 
+/**
+ * Callback for resolveUrl.
+ * @callback resolveUrlCallback
+ * @param {url} url - Resolved URL.
+ * @returns {void}
+ */
+
+/**
+ * Returns resolved URL.
+ * @param {string} url - URL.
+ * @param {resolveUrlCallback} callback - Function to call.
+ */
+function resolveUrl(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('HEAD', url, true);
+    xhr.onload = function () {
+        callback(xhr.responseURL || url);
+    };
+    xhr.onerror = function (e) {
+        console.error(e);
+        callback(url);
+    };
+    xhr.send(null);
+}
+
 var SubtitlesOctopus = function (options) {
     var supportsWebAssembly = false;
     try {
@@ -952,7 +977,11 @@ var SubtitlesOctopus = function (options) {
         });
     };
 
-    self.init();
+    // Worker in Tizen 5 doesn't resolve relative path with async request
+    resolveUrl(self.workerUrl, function (url) {
+        self.workerUrl = url;
+        self.init();
+    });
 };
 
 if (typeof SubtitlesOctopusOnLoad == 'function') {
