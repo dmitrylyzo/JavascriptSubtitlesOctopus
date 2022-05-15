@@ -300,6 +300,24 @@ var SubtitlesOctopus = function (options) {
         self.subUrl = subUrl;
     };
 
+    /**
+     * Returns time rounded down to target FPS.
+     * @param {number} tm Time in seconds.
+     * @returns Time rounded to target FPS.
+     */
+    function floorTimeToTargetFps(tm) {
+        return Math.floor(tm * self.targetFps + FRAMETIME_ULP) / self.targetFps;
+    }
+
+    /**
+     * Returns time rounded up to target FPS.
+     * @param {number} tm Time in seconds.
+     * @returns Time rounded to target FPS.
+     */
+     function ceilTimeToTargetFps(tm) {
+        return Math.ceil(tm * self.targetFps - FRAMETIME_ULP) / self.targetFps;
+    }
+
     function _cleanPastRendered(currentTime, seekClean) {
         var retainedItems = [];
         for (var i = 0, len = self.renderedItems.length; i < len; i++) {
@@ -349,7 +367,7 @@ var SubtitlesOctopus = function (options) {
 
         if (typeof currentTime === 'undefined') {
             if (!self.video) return;
-            currentTime = self.video.currentTime + self.timeOffset;
+            currentTime = floorTimeToTargetFps(self.video.currentTime + self.timeOffset);
         }
 
         var size = 0;
@@ -451,6 +469,8 @@ var SubtitlesOctopus = function (options) {
             // request the next event with some extra time, because we won't get it instantly
             nextTime += Math.max(self.oneshotState.nextRequestOffset, 1.0 / self.targetFps) * self.video.playbackRate;
         }
+
+        nextTime = ceilTimeToTargetFps(nextTime);
 
         var nextEvent = null;
         var finishTime = -1;
@@ -712,42 +732,53 @@ var SubtitlesOctopus = function (options) {
                             });
                         }
 
-                        var items = [];
-                        var size = 0;
-                        for (var i = 0, len = data.canvases.length; i < len; i++) {
-                            var item = data.canvases[i];
-                            items.push({
-                                w: item.w,
-                                h: item.h,
-                                x: item.x,
-                                y: item.y,
-                                image: new ImageData(new Uint8ClampedArray(item.buffer), item.w, item.h)
+                        if (data.emptyFinish < 0 || data.emptyFinish - data.eventStart > EVENTTIME_ULP) {
+                            var items = [];
+                            var size = 0;
+                            for (var i = 0, len = data.canvases.length; i < len; i++) {
+                                var item = data.canvases[i];
+                                items.push({
+                                    w: item.w,
+                                    h: item.h,
+                                    x: item.x,
+                                    y: item.y,
+                                    image: new ImageData(new Uint8ClampedArray(item.buffer), item.w, item.h)
+                                });
+                                size += item.buffer.byteLength;
+                            }
+
+                            var eventSplitted = false;
+
+                            if (data.animated) {
+                                var newFinish = ceilTimeToTargetFps(data.eventStart + 1.0 / self.targetFps);
+                                data.emptyFinish = newFinish;
+                                data.eventFinish = newFinish;
+                                eventSplitted = true;
+                            } else if (data.emptyFinish > 0) {
+                                data.eventFinish = ceilTimeToTargetFps(data.eventFinish);
+                                data.emptyFinish = ceilTimeToTargetFps(data.emptyFinish);
+                            }
+
+                            console.debug('+ (' + data.eventStart + '..' + data.eventFinish + '..' + data.emptyFinish + ')');
+
+                            self.renderedItems.push({
+                                eventStart: data.eventStart,
+                                eventFinish: data.eventFinish,
+                                emptyFinish: data.emptyFinish,
+                                spentTime: data.spentTime,
+                                blendTime: data.blendTime,
+                                viewport: data.viewport,
+                                items: items,
+                                animated: data.animated,
+                                size: size
                             });
-                            size += item.buffer.byteLength;
-                        }
 
-                        var eventSplitted = false;
-                        if ((data.emptyFinish > 0 && data.emptyFinish - data.eventStart < 1.0 / self.targetFps) || data.animated) {
-                            var newFinish = data.eventStart + 1.0 / self.targetFps;
-                            data.emptyFinish = newFinish;
-                            data.eventFinish = newFinish;
-                            eventSplitted = true;
+                            self.renderedItems.sort(function (a, b) {
+                                return a.eventStart - b.eventStart;
+                            });
+                        } else if (self.debug) {
+                            console.info('oneshot skips short event');
                         }
-                        self.renderedItems.push({
-                            eventStart: data.eventStart,
-                            eventFinish: data.eventFinish,
-                            emptyFinish: data.emptyFinish,
-                            spentTime: data.spentTime,
-                            blendTime: data.blendTime,
-                            viewport: data.viewport,
-                            items: items,
-                            animated: data.animated,
-                            size: size
-                        });
-
-                        self.renderedItems.sort(function (a, b) {
-                            return a.eventStart - b.eventStart;
-                        });
 
                         if (requestNextTimestamp >= 0) {
                             // requesting an out of order event render
