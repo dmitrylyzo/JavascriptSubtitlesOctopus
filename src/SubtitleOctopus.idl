@@ -178,12 +178,6 @@ interface EventStopTimesResult {
     attribute long is_animated;
 };
 
-[NoDelete]
-interface Brotli {
-    void Brotli();
-    ByteString decode([Const] ByteString encoded, unsigned long encoded_size, IntPtr decoded_size);
-};
-
 interface SubtitleOctopus {
     void SubtitleOctopus();
     attribute ASS_Track track;
