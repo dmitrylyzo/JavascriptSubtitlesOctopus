@@ -97,6 +97,7 @@ jobs:
           git config --global user.email "actions@noreply.github.com"
           git config --global user.name "GitHub Action"
           git add assets/js
-          git commit -m "$(printf \
-            "Update binaries to latest nightly\n\nFrom %s" "${{ github.sha }}")"
-          git push origin gh-pages
+          (git commit -m "$(printf \
+            "Update binaries to latest nightly\n\nFrom %s" "${{ github.sha }}")" \
+           && git push origin gh-pages) \
+           || : # Ignore if nothing changed
