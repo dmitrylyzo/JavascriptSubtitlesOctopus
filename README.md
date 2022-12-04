@@ -195,17 +195,6 @@ Adjusting `prescaleFactor`, `prescaleHeightLimit` and `maxRenderHeight` to lower
 the rendering canvas can work around this at the expense of visual quality.
 
 
-### Brotli Compressed Subtitles (DEPRECATED)
-Manual support for brotli-compressed subtitles is tentatively deprecated
-and may be removed with the next release.
-
-Instead use HTTP's `Content-Encoding:` header to transmit files compressed and
-let the browser handle decompression before it reaches JSO. This supports more
-compression algorithms and is likely faster.
-Do not use a `.br` file extension if you use `Content-Ecoding:` as this will
-conflict with the still existing manual support which tries to decompress any data
-with a `.br` extension.
-
 ## How to build?
 
 ### Dependencies
