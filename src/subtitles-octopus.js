@@ -236,9 +236,21 @@ var SubtitlesOctopus = function (options) {
         self.setIsPaused(true, self.video.currentTime + self.timeOffset);
     }
 
+    // Events to catch valid videoWidth.
+    // When playing HLS in mobile Chrome, `readyState` is unreliable: it can
+    // change from `HAVE_ENOUGH_DATA` (4) at startup to `HAVE_METADATA` (1) at
+    // `durationchange` event. Because of this, `loadedmetadata` may not work
+    // to get the correct `videoWidth` value.
+    var METADATA_EVENTS = ['durationchange', 'loadeddata', 'play', 'loadedmetadata'];
+
     function onLoadedMetadata(e) {
-        e.target.removeEventListener(e.type, onLoadedMetadata, false);
-        self.resize();
+        if (e.target.videoWidth > 0) {
+            METADATA_EVENTS.forEach(function (name) {
+                e.target.removeEventListener(name, onLoadedMetadata, false);
+            });
+            self.resize();
+            self.resetRenderAheadCache(false); // FIXME: Delay oneshotRender until videoWidth is set
+        }
     }
 
     self.setVideo = function (video) {
@@ -268,7 +280,9 @@ var SubtitlesOctopus = function (options) {
                 self.resize();
             }
             else {
-                self.video.addEventListener('loadedmetadata', onLoadedMetadata, false);
+                METADATA_EVENTS.forEach(function (name) {
+                    self.video.addEventListener(name, onLoadedMetadata, false);
+                });
             }
         }
     };
@@ -953,7 +967,10 @@ var SubtitlesOctopus = function (options) {
             self.video.removeEventListener('seeked', onSeeked, false);
             self.video.removeEventListener('ratechange', onRateChange, false);
             self.video.removeEventListener('waiting', onWaiting, false);
-            self.video.removeEventListener('loadedmetadata', onLoadedMetadata, false);
+
+            METADATA_EVENTS.forEach(function (name) {
+                e.target.removeEventListener(name, onLoadedMetadata, false);
+            });
 
             document.removeEventListener('fullscreenchange', self.resizeWithTimeout, false);
             document.removeEventListener('mozfullscreenchange', self.resizeWithTimeout, false);
