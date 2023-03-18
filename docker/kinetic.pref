@@ -1,0 +1,7 @@
+Package: *
+Pin: release n=kinetic
+Pin-Priority: -10
+
+Package: licensecheck
+Pin: release n=kinetic
+Pin-Priority: 500
