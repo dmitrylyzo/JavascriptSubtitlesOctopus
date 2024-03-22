@@ -1,4 +1,4 @@
-FROM docker.io/emscripten/emsdk:3.1.39
+FROM emscripten/emsdk:3.1.56
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
@@ -19,6 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         gperf \
         licensecheck \
         gawk \
+    && apt-get clean autoclean -y \
+    && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
 # HACK: Update licensecheck (3.3.0+) to fix UTF-8 encoding errors
