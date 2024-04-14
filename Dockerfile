@@ -1,4 +1,4 @@
-FROM emscripten/emsdk:3.1.56
+FROM emscripten/emsdk:3.1.39
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         gawk \
     && apt-get clean autoclean -y \
     && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/cache/apt/archives* /var/lib/apt/lists/*
 
 # HACK: Update licensecheck (3.3.0+) to fix UTF-8 encoding errors
 COPY docker/kinetic.pref /etc/apt/preferences.d/
