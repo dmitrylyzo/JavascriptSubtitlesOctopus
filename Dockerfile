@@ -1,4 +1,4 @@
-FROM docker.io/emscripten/emsdk:3.1.24
+FROM emscripten/emsdk:3.1.39
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
@@ -19,7 +19,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         gperf \
         licensecheck \
         gawk \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean autoclean -y \
+    && apt-get autoremove -y \
+    && rm -rf /var/cache/apt/archives* /var/lib/apt/lists/*
 
 WORKDIR /code
 CMD ["make"]
