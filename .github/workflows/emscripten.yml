@@ -17,7 +17,7 @@ jobs:
           all_but_latest: true
 
     - name: Checkout Base Repo
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
     - name: Checkout Submodules
       run: |
@@ -33,7 +33,7 @@ jobs:
         docker run --rm --env LC_ALL=C.UTF-8 -v "${PWD}":/code libass/jso:latest
 
     - name: Upload Nightly Build
-      uses: actions/upload-artifact@v4.3.1
+      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
       if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master'
       with:
         name: js
