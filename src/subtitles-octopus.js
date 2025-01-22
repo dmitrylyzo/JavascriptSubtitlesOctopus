@@ -73,6 +73,7 @@ var SubtitlesOctopus = function (options) {
     // private
     var targetWidth;    // Width of render target
     var targetHeight;   // Height of render target
+    var targetFrameTime = 1.0 / self.targetFps; // Time of single frame
 
     (function() {
         if (typeof ImageData.prototype.constructor === 'function') {
@@ -450,7 +451,7 @@ var SubtitlesOctopus = function (options) {
 
         if (!self.video.paused) {
             // request the next event with some extra time, because we won't get it instantly
-            nextTime += Math.max(self.oneshotState.nextRequestOffset, 1.0 / self.targetFps) * self.video.playbackRate;
+            nextTime += Math.max(self.oneshotState.nextRequestOffset, targetFrameTime) * self.video.playbackRate;
         }
 
         var nextEvent = null;
@@ -723,8 +724,8 @@ var SubtitlesOctopus = function (options) {
                         }
 
                         var eventSplitted = false;
-                        if ((data.emptyFinish > 0 && data.emptyFinish - data.eventStart < 1.0 / self.targetFps) || data.animated) {
-                            var newFinish = data.eventStart + 1.0 / self.targetFps;
+                        if ((data.emptyFinish > 0 && data.emptyFinish - data.eventStart < targetFrameTime) || data.animated) {
+                            var newFinish = data.eventStart + targetFrameTime;
                             data.emptyFinish = newFinish;
                             data.eventFinish = newFinish;
                             eventSplitted = true;
