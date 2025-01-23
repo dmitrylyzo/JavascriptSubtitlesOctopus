@@ -546,6 +546,7 @@ public:
         ASS_Event *cur = track->events;
         long long now = _convert_time_to_ms(tm);
         long long closest = -1;
+        printf("findNextEventStart: %lld\n", now);
 
         for (int i = 0; i < track->n_events; i++, cur++) {
             long long start = cur->Start;
@@ -599,6 +600,7 @@ public:
             // some event is going on, so we need to re-draw either when it stops
             // or when some other event starts
             result.eventFinish = _convert_time_to_seconds((minStart == -1 || minFinish < minStart) ? minFinish : minStart);
+            if (minStart != -1 && minFinish < minStart) printf("minFinish: %lld, minStart: %lld\n", minFinish, minStart);
         } else {
             // there's no current event, so no need to draw anything
             result.eventFinish = -1;
@@ -611,6 +613,8 @@ public:
             // there's no empty space after eventFinish happens
             result.emptyFinish = result.eventFinish;
         }
+
+        printf("findEventStopTimes: %lld, minFinish: %lld, minStart: %lld\n", now, minFinish, minStart);
 
         return &result;
     }

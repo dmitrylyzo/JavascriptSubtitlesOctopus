@@ -370,8 +370,9 @@ var SubtitlesOctopus = function (options) {
         }
 
         if (size <= self.renderAhead) {
-            var lastRendered = currentTime - (renderNow ? 0 : FRAMETIME_ULP);
+            var lastRendered = currentTime;// - (renderNow ? 0 : FRAMETIME_ULP);
             if (!self.oneshotState.renderRequested) {
+                console.debug('request ', renderNow, lastRendered);
                 self.oneshotState.renderRequested = true;
                 self.worker.postMessage({
                     target: 'oneshot-render',
@@ -684,6 +685,7 @@ var SubtitlesOctopus = function (options) {
                             return;
                         }
 
+                        console.debug('oneshot received', data.lastRenderedTime, data.eventStart, data.eventFinish, data.emptyFinish);
                         if (self.debug) {
                             console.info('oneshot received (start=' +
                                     data.eventStart + ', empty=' + data.emptyFinish +
@@ -706,6 +708,7 @@ var SubtitlesOctopus = function (options) {
                                 animated: false,
                                 size: 0
                             });
+                            console.debug('bogus', self.renderedItems[self.renderedItems.length - 1]);
                         }
 
                         var items = [];
@@ -724,6 +727,7 @@ var SubtitlesOctopus = function (options) {
 
                         var eventSplitted = false;
                         if ((data.emptyFinish > 0 && data.emptyFinish - data.eventStart < 1.0 / self.targetFps) || data.animated) {
+                            console.debug('stretch', data.emptyFinish - data.eventStart, data.animated);
                             var newFinish = data.eventStart + 1.0 / self.targetFps;
                             data.emptyFinish = newFinish;
                             data.eventFinish = newFinish;
@@ -740,6 +744,7 @@ var SubtitlesOctopus = function (options) {
                             animated: data.animated,
                             size: size
                         });
+                        console.debug(self.renderedItems[self.renderedItems.length - 1]);
 
                         self.renderedItems.sort(function (a, b) {
                             return a.eventStart - b.eventStart;
