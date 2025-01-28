@@ -697,20 +697,6 @@ var SubtitlesOctopus = function (options) {
                         if (Math.abs(data.lastRenderedTime - requestNextTimestamp) < EVENTTIME_ULP) {
                             requestNextTimestamp = -1;
                         }
-                        if (data.eventStart - data.lastRenderedTime > EVENTTIME_ULP) {
-                            // generate bogus empty element, so all timeline is covered anyway
-                            self.renderedItems.push({
-                                eventStart: data.lastRenderedTime,
-                                eventFinish: data.lastRenderedTime - FRAMETIME_ULP,
-                                emptyFinish: data.eventStart,
-                                viewport: data.viewport,
-                                spentTime: 0,
-                                blendTime: 0,
-                                items: [],
-                                animated: false,
-                                size: 0
-                            });
-                        }
 
                         var items = [];
                         var size = 0;
