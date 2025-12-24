@@ -33,7 +33,7 @@ jobs:
         docker run --rm --env LC_ALL=C.UTF-8 -v "${PWD}":/code libass/jso:latest
 
     - name: Upload Nightly Build
-      uses: actions/upload-artifact@v4.3.1
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master'
       with:
         name: js
