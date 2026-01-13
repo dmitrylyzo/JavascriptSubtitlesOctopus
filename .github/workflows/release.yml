@@ -2,6 +2,8 @@ name: Build & Publish to NPM
 
 on:
   push:
+    branches:
+      - ci
     tags:
       - v*
 
