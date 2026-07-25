@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Cancel previous runs
-      uses: styfle/cancel-workflow-action@0.12.1
+      uses: styfle/cancel-workflow-action@d07a454dad7609a92316b57b23c9ccfd4f59af66 # 0.13.1
       with:
           access_token: ${{ github.token }}
           all_but_latest: true
 
     - name: Checkout Base Repo
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
     - name: Checkout Submodules
       run: |
@@ -33,7 +33,7 @@ jobs:
         docker run --rm --env LC_ALL=C.UTF-8 -v "${PWD}":/code libass/jso:latest
 
     - name: Upload Nightly Build
-      uses: actions/upload-artifact@v4.3.1
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master'
       with:
         name: js
